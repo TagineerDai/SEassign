@@ -7,6 +7,36 @@
 #include <unordered_map>
 #include <utility> // pair
 #include<qstring.h>
+enum AC {
+	OFF = 0, ON = 1
+};
+
+enum STRATEGY {
+	FIFS, PRI, RR
+};
+
+enum MODE {
+	WARM = 0, COOL = 1
+};
+
+enum CONNECT {
+	ONC, OFFC, CNTC
+};
+
+enum WIND {
+	NON, LOW, MEDIUM, HIGH
+};
+
+//Connect setting
+class MySQLSetting {
+public:
+	MySQLSetting() {}
+	char user[20] = "root";         //username
+	char pswd[20] = "clan95588";         //password
+	char host[20] = "localhost";    //or"127.0.0.1"
+	unsigned int port = 3306;           //server port
+	char table[20] = "DAC";        //database
+};
 
 /*const*/
 #define POWERHIGH 1.25
@@ -20,23 +50,17 @@
 #define TFLOOR 10
 #define TDEFAULT 25
 
-
 class ConfigAC{
 public:
 	ConfigAC();
 	~ConfigAC();
-	bool filled;//unused
+	bool unfilled;
 	double Tcell, Tfloor, Tdefault;
-	int mode;
+	MODE mode;
 	double Ecost;
 	std::vector<double> Epower;
 };
 
-enum AC {
-	COOL, WARM, NON, LOW, MEDIUM, HIGH, 
-	ON, OFF, FIFS, PRI, RR, 
-	ONC, OFFC, CNTC
-};
 
 /* for detail list */
 enum EVENT {
@@ -51,7 +75,6 @@ extern const char* ACstr[14];
 QString Enum2QStr(int index);
 int QStr2Enum(QString str);
 int Str2Enum(std::string str);
-
 
 class ParserAC
 {

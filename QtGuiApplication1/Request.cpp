@@ -2,16 +2,16 @@
 Request::Request()
 {
 	roomID = 0;
-	mode = AC::COOL;
-	wind = AC::NON;
+	mode = COOL;
+	wind = NON;
 	Ttarget = cfg.Tdefault;
 	timestamp = time((time_t*)NULL);
 }
 Request::Request(int id)
 {
 	roomID = id;
-	mode = AC::COOL;
-	wind = AC::NON;
+	mode = COOL;
+	wind = NON;
 	Ttarget = cfg.Tdefault;
 	timestamp = time((time_t*)NULL);
 }

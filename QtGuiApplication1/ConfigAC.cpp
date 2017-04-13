@@ -11,18 +11,41 @@ const char* ACstr[14] = {
 };
 
 ConfigAC::ConfigAC() {
-	ParserAC parser = ParserAC("config.txt");
-	parser.get("Tcell", Tcell);
-	parser.get("Tfloor", Tfloor);
-	parser.get("Tdefault", Tdefault);
-	int type;
-	parser.get("workmodel", type);
-	if (type == 0)
-		mode = AC::COOL;
-	else
-		mode = AC::WARM;
-	parser.get("Ecost", Ecost);
-	parser.get("Epower", Epower);
+	unfilled = true;
+	try {
+		ParserAC parser = ParserAC("config.txt");
+		parser.get("Tcell", Tcell);
+		parser.get("Tfloor", Tfloor);
+		parser.get("Tdefault", Tdefault);
+		int type;
+		parser.get("workmodel", type);
+		if (type == 0)
+			mode = COOL;
+		else
+			mode = WARM;
+		parser.get("Ecost", Ecost);
+		parser.get("Epower", Epower);
+		unfilled = false;
+	}
+	catch (...) {
+		bool yes_default = false;
+		//yes_default = Messagebox(balhbalh);
+		//MessageBox 3
+		if (yes_default) {
+			Tcell = TCELL;
+			Tfloor = TFLOOR;
+			Tdefault = TDEFAULT;
+			mode = COOL;
+			Ecost = ELECOST;
+			Epower.push_back(POWERNON);
+			Epower.push_back(POWERLOW);
+			Epower.push_back(POWERMEDIUM);
+			Epower.push_back(POWERHIGH);
+			unfilled = false;
+		}
+		else return;
+	}
+	return;
 }
 
 ConfigAC::~ConfigAC() {
@@ -243,23 +266,19 @@ code sample:
 (QLabel*)stateLabel->setText(Enum2Str(AC::OFF))
 */
 QString Enum2QStr(int index) {
-	if (index >= (int)AC::COOL && index <= (int)AC::CNTC)
-		return QString(ACstr[index]);
+//TODO
 	return QString();
 };
 /*Convert from enum to QString*/
 int QStr2Enum(QString str) {
-	for (int i = (int)AC::COOL; i <= (int)AC::CNTC; i++)
-		if (QString::compare(str, QString(ACstr[i])) == 0)
-			return i;
-	return -1;
+//TODO
+	return 0;
 };
 
 /*Convert from socketmsg to enum
 to finish
 */
 int Str2Enum(std::string str) {
-	if (str.compare("") == 0) {
-		return EVENT::TOWARM;
-	}
+//TODO
+	return 0;
 };

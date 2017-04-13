@@ -4,8 +4,8 @@ ServerAC::ServerAC() {
 	Tcell = TCELL;
 	Tfloor = TFLOOR;
 	Tdefault = TDEFAULT;
-	mode = AC::COOL;
-	work = AC::OFF;
+	mode = COOL;
+	work = OFF;
 	Ecost = ELECOST;
 	Epower[0] = POWERNON;
 	Epower[1] = POWERLOW;
@@ -17,13 +17,12 @@ ServerAC::ServerAC(ConfigAC cfg) {
 	Tcell = cfg.Tcell;
 	Tfloor = cfg.Tfloor;
 	Tdefault = cfg.Tdefault;
-	if (cfg.mode == AC::COOL || cfg.mode == AC::WARM)
+	if (cfg.mode == COOL || cfg.mode == WARM)
 		mode = cfg.mode;
 	else
-		mode = AC::COOL;
+		mode = COOL;
 
 	work = AC::OFF;
-
 	Ecost = cfg.Ecost;
 	if (Ecost < 0) {
 		Ecost = ELECOST;

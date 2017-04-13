@@ -1,9 +1,22 @@
 #pragma once
+#include "ConfigAC.h"
+#include <qhostaddress.h>
+#include <qdatetime.h>
 class ClientAC {
 public:
 	int roomID;
-	int state, mode, wind;
+	AC work;
+	CONNECT state;
+	MODE mode;
+	WIND wind;
+	double consume;
 	double cost;
-	double Ttarget, Tcurrent;
-	ClientAC(int roomID);
+	double Ttarget;
+	double Tcurrent;
+	QHostAddress addr;
+	quint16 port;
+	QDateTime time;
+	ClientAC();
+	ClientAC(int);
+	ClientAC(int, QHostAddress, quint16);
 };
