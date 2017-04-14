@@ -1,14 +1,8 @@
 100 配置文件初始化错误 ConfigAC.unfilled = false -> ConfigAC()
 101	数据库初始化错误	main.cpp -> initDatabase return false -> mysql_real_connect return false
+102 关闭登陆界面|取消登陆 导致程序退出
+103
 
-main.cpp
- 2 message box at //MessageBox
- 1:
- 		//Message box : 无法正确初始化程序，程序结束。
-		//确定
- 2:
-		//Message box : 无法提供数据库服务，程序结束。
-		//确定
 configAC.cpp -> configAC()
  1 message box at //MessageBox
 		//配置文件出错，是否使用默认配置？

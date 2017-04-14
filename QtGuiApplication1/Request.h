@@ -1,4 +1,5 @@
 #pragma once
+#include <qdatetime.h>
 #include <time.h>
 #include <qstring.h>
 #include "ConfigAC.h"
@@ -7,14 +8,18 @@ extern ConfigAC cfg;
 
 class Request {
 public:
-	time_t timestamp;
+	QDateTime time;
 	int roomID;
-	int mode, wind;
+	MODE mode;
+	WIND wind;
 	float Ttarget;
+	bool handle;
 	Request();
 	Request(int roomID);
-	Request(int id, int mode, int wind, float Ttarget, time_t timestamp) :
-		roomID(id), mode(mode), wind(wind), Ttarget(Ttarget), timestamp(timestamp) {}
+
+	Request(int id, MODE mode, WIND wind, float Ttarget, QDateTime timestamp) :
+		roomID(id), mode(mode), wind(wind), Ttarget(Ttarget), time(timestamp) {}
+	
 	Request(Request& req);
 	void setReq(Request req);
 	QString toString();

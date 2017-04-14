@@ -1,86 +1,57 @@
+# pragma execution_character_set("utf-8")
 #include "mainwindow.h"
+#include "loginDialog.h"
 #include "ServerAC.h"
+#include "ClientAC.h"
 #include "ClientArray.h"
 #include "ConfigAC.h"
+#include "DataAC.h"
 #include <QtWidgets/QApplication>
-#include <winsock2.h>//For mysql error
-#include <mysql.h>
 #include <QtCore\qfileinfo.h>
 #include <QtWidgets/QApplication>
 #include <qfile.h>
 #include <qdialog.h>
 #include <iostream>
-#include <qsqldatabase.h>
-#include <qsqlquery.h>
-#include <qsqldriver.h>
 #include <qmessagebox.h>
 using namespace std;
 
+ClientAC client;
 ServerAC server;
 ClientArray clients;
 ConfigAC cfg;
-MYSQL myCont;
-
-bool initDatabase() {
-	MySQLSetting dbc = MySQLSetting();
-	mysql_init(&myCont);
-	if (mysql_real_connect(&myCont, dbc.host, dbc.user, dbc.pswd, dbc.table, dbc.port, NULL, 0))
-	{
-		mysql_query(&myCont, "CREATE DATABASE  IF NOT EXISTS `DAC`");
-		mysql_query(&myCont, "USE `DAC`");
-		mysql_query(&myCont, "DROP TABLE IF EXISTS `accountInfo`");
-		mysql_query(&myCont, "DROP TABLE IF EXISTS `slave`");
-		mysql_query(&myCont, "DROP TABLE IF EXISTS `request`");
-		mysql_query(&myCont, "DROP TABLE IF EXISTS `event`");
-		mysql_query(&myCont, "create table accountInfo("
-			"`account` varchar(20) PRIMARY KEY NOT NULL,"
-			"`password` varchar(20) DEFAULT 'SE2017')");
-		mysql_query(&myCont, "create table slave("
-			"`rnum` int,"
-			"`consume` real default '0',"
-			"`cost` real default '0')");
-		mysql_query(&myCont, "create table request("
-			"`id` int primary key auto_increment,"
-			"`rnum` int,"
-			"`timestart` varchar(32),"
-			"`timeend` varchar(32),"
-			"`tempstart` varchar(32),"
-			"`tempend` varchar(32),"
-			"`wind` int,"
-			"`consume` real default 0,"
-			"`cost` real default 0)");
-		mysql_query(&myCont, "create table event("
-			"`id` int primary key auto_increment,"
-			"`rnum` int,"
-			"`event` varchar(20),"
-			"`time` varchar(20))");
-		mysql_close(&myCont);//close the connect
-		return true;
-	}
-	return false;
-}
-
+ROLE role;
 
 int main(int argc, char *argv[])
 {
-	//LoginWindow lw;
+	QApplication a(argc, argv);
+	MainWindow w;
 
-	cfg = ConfigAC();
-	if (cfg.unfilled) {
-		//MessageBox 1
-
-		return 100;
-	}
-
-	if (!initDatabase()) {
-		//MessageBox 2
+	if (!initDB()) {
+		QMessageBox::warning(NULL, "提示", "无法启动数据库服务，程序即将关闭。", QMessageBox::Yes | QMessageBox::Cancel);
 		return 101;
 	}
 
-	server = ServerAC(cfg);
-	QApplication a(argc, argv);
-	MainWindow w;
-	w.show();
+	cfg = ConfigAC();
 
+	if (cfg.unfilled == true) {
+		int answer = QMessageBox::question(NULL, "系统设置", "设置文件无法正常打开，是否使用默认设置？",
+			QMessageBox::Yes | QMessageBox::No);
+		if (answer == QMessageBox::Yes) {
+			cfg.defaultCFG();
+		}
+		else {
+			QMessageBox::warning(NULL, "提示", "程序配置未正常进行，程序即将关闭。", QMessageBox::Yes | QMessageBox::Cancel);
+			return 100;
+		}
+	}
+
+	loginDialog *login = new loginDialog();
+	int loginResult = login->exec();
+	if (loginResult == QDialog::Rejected) {
+		return 102;
+	}
+	server = ServerAC(cfg);
+	w.initWidget();
+	w.show();
 	return a.exec();
 }

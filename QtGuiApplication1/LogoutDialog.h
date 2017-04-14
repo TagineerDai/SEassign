@@ -12,7 +12,6 @@ class LogoutDialog : public QDialog
 public:
 	LogoutDialog(QWidget *parent = Q_NULLPTR);
 	~LogoutDialog();
-
 private:
 	Ui::LogoutDialog ui;
 };

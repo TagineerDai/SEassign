@@ -26,7 +26,7 @@ bool ClientArray::addClient(int roomID, QHostAddress addr, quint16 port) {
 	ClientAC* now = getClient(roomID);
 	if (now != nullptr) {
 		now->state = ONC;
-		now->
+
 	}
 	return true;
 }

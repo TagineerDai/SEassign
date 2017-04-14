@@ -1,11 +1,12 @@
 #include "Request.h"
+#include "ConfigAC.h"
 Request::Request()
 {
 	roomID = 0;
 	mode = COOL;
 	wind = NON;
 	Ttarget = cfg.Tdefault;
-	timestamp = time((time_t*)NULL);
+	time = QDateTime::currentDateTime();
 }
 Request::Request(int id)
 {
@@ -13,7 +14,7 @@ Request::Request(int id)
 	mode = COOL;
 	wind = NON;
 	Ttarget = cfg.Tdefault;
-	timestamp = time((time_t*)NULL);
+	time = QDateTime::currentDateTime();
 }
 
 Request::Request(Request& req)
@@ -22,7 +23,7 @@ Request::Request(Request& req)
 	mode = req.mode;
 	wind = req.wind;
 	Ttarget = req.Ttarget;
-	timestamp = req.timestamp;
+	time = req.time;
 }
 
 void Request::setReq(Request req)
@@ -31,15 +32,15 @@ void Request::setReq(Request req)
 	mode = req.mode;
 	wind = req.wind;
 	Ttarget = req.Ttarget;
-	timestamp = req.timestamp;
+	time = req.time;
 }
 
 QString Request::toString()
 {
-	QString str = "Room " + QString::number(roomID, 10)
-		+ " request: " + Enum2QStr(mode) 
-		+ " " + Enum2QStr(wind)
-		+ " to " + QString::number(Ttarget);
+	QString str = QString("Room ") + QString::number(roomID, 10)
+		+ QString(" request: ") + MODE2Qstr(mode) 
+		+ QString(" ") + WIND2Qstr(wind)
+		+ QString(" to ") + time.toString("yyyy-MM-dd hh:mm:ss");
 	return str;
 }
 

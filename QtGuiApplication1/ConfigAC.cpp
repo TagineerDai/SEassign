@@ -1,51 +1,91 @@
+# pragma execution_character_set("utf-8")
 #include <fstream>
 #include <iostream>
 #include <algorithm> // find_if
 #include <cctype> // isalpha
+#include<qmessagebox.h>
 #include"ConfigAC.h"
+#include"qdebug.h"
 
-const char* ACstr[14] = {
-	"制冷", "制热", "未运行", "低速", "中速", "高速",
-	"运行", "停止", "先到先服务", "优先级","Round Robin",
-	"已连接", "未连接", "未开机"
-};
+QString AC2Qstr(AC ac) {
+	switch (ac) {
+	case OFF:
+		return "关机";
+		break;
+	case ON:
+		return "开机";
+		break;
+	}
+}
+
+QString STRATEGY2Qstr(STRATEGY st) {
+	switch (st) {
+	case FIFS:
+		return QString("SHORT>LONG");
+		break;
+	case PRI:
+		return QString("HIGH>MID>LOW");
+		break;
+	case RR:
+		return QString("Round-Robin");
+		break;
+	}
+}
+
+QString MODE2Qstr(int m) {
+	switch (m) {
+	case COOL:
+		return QString("制冷");
+	case WARM:
+		return QString("制热");
+	}
+}
+
+QString WIND2Qstr(int w) {
+	switch (w) {
+	case LOW:
+		return QString("低速");
+	case MEDIUM:
+		return QString("中速");
+	case HIGH:
+		return QString("高速");
+	}
+}
 
 ConfigAC::ConfigAC() {
 	unfilled = true;
-	try {
-		ParserAC parser = ParserAC("config.txt");
+	ParserAC parser = ParserAC("config.txt");
+	if (parser.ok == 1) {
+		parser.get("port", port);
 		parser.get("Tcell", Tcell);
 		parser.get("Tfloor", Tfloor);
 		parser.get("Tdefault", Tdefault);
 		int type;
 		parser.get("workmodel", type);
-		if (type == 0)
-			mode = COOL;
-		else
-			mode = WARM;
+		if (type == 1) mode = COOL;
+		else mode = WARM;
+		parser.get("interval", interval);
 		parser.get("Ecost", Ecost);
 		parser.get("Epower", Epower);
+		parser.get("Eeffect", Eeffect);
 		unfilled = false;
 	}
-	catch (...) {
-		bool yes_default = false;
-		//yes_default = Messagebox(balhbalh);
-		//MessageBox 3
-		if (yes_default) {
-			Tcell = TCELL;
-			Tfloor = TFLOOR;
-			Tdefault = TDEFAULT;
-			mode = COOL;
-			Ecost = ELECOST;
-			Epower.push_back(POWERNON);
-			Epower.push_back(POWERLOW);
-			Epower.push_back(POWERMEDIUM);
-			Epower.push_back(POWERHIGH);
-			unfilled = false;
-		}
-		else return;
-	}
 	return;
+}
+
+void ConfigAC::defaultCFG() {
+	port = 666;
+	interval = 10;
+	Tcell = TCELL;
+	Tfloor = TFLOOR;
+	Tdefault = TDEFAULT;
+	mode = COOL;
+	Ecost = ELECOST;
+	Epower.push_back(POWERNON);
+	Epower.push_back(POWERLOW);
+	Epower.push_back(POWERMEDIUM);
+	Epower.push_back(POWERHIGH);
+	unfilled = false;
 }
 
 ConfigAC::~ConfigAC() {
@@ -57,7 +97,7 @@ ParserAC::ParserAC(const std::string& filename)
 	std::ifstream ifs(filename);
 	if (!ifs.is_open())
 	{
-		std::cout << "ParserAC::ParserAC - Unable to open " << filename << "." << std::endl;
+		ok = 0;
 		return;
 	}
 
@@ -108,8 +148,6 @@ ParserAC::~ParserAC()
 		ifs.close();
 	}
 
-	// add elements that doesn't exist in a file but exist in configMap
-	// opened to the user to modify the complexity of the network {useless
 	for (auto it = configMap.begin(); it != configMap.end(); ++it)
 	{
 		auto found = std::find_if(content.begin(), content.end(), [&](const KeyValuePair& p)
@@ -121,11 +159,10 @@ ParserAC::~ParserAC()
 			content.emplace_back(it->first, it->second);
 	}
 
-	/* WRITE CONTENT */
 	std::ofstream ofs(filename);
 	if (!ofs.is_open())
 	{
-		std::cout << "ParserAC::~ParserAC - Unable to open " << filename << std::endl;
+		ok = 0;
 		return;
 	}
 
@@ -259,26 +296,3 @@ void ParserAC::set(const std::string& key, const std::vector<T>& vector)
 		modified = true;
 	}
 }
-
-
-/*Covert from QString to enum
-code sample:
-(QLabel*)stateLabel->setText(Enum2Str(AC::OFF))
-*/
-QString Enum2QStr(int index) {
-//TODO
-	return QString();
-};
-/*Convert from enum to QString*/
-int QStr2Enum(QString str) {
-//TODO
-	return 0;
-};
-
-/*Convert from socketmsg to enum
-to finish
-*/
-int Str2Enum(std::string str) {
-//TODO
-	return 0;
-};

@@ -7,6 +7,13 @@
 #include <unordered_map>
 #include <utility> // pair
 #include<qstring.h>
+#define TIMEFORMAT "yyyy-MM-dd HH:mm:ss"
+#include <qstring.h>
+
+enum ROLE {
+	ROOM, ADMIN
+};
+
 enum AC {
 	OFF = 0, ON = 1
 };
@@ -14,7 +21,6 @@ enum AC {
 enum STRATEGY {
 	FIFS, PRI, RR
 };
-
 enum MODE {
 	WARM = 0, COOL = 1
 };
@@ -26,6 +32,11 @@ enum CONNECT {
 enum WIND {
 	NON, LOW, MEDIUM, HIGH
 };
+
+QString AC2Qstr(AC ac);
+QString STRATEGY2Qstr(STRATEGY st);
+QString MODE2Qstr(int m);
+QString WIND2Qstr(int w);
 
 //Connect setting
 class MySQLSetting {
@@ -52,15 +63,19 @@ public:
 
 class ConfigAC{
 public:
-	ConfigAC();
-	~ConfigAC();
-	bool unfilled;
+	int port;
+	bool unfilled = true;
 	double Tcell, Tfloor, Tdefault;
 	MODE mode;
-	double Ecost;
-	std::vector<double> Epower;
-};
+	double Ecost;// price of electric
+	std::vector<double> Epower;// consume of electric/wind
+	std::vector<double> Eeffect; // effect of 1 min/wind
+	int interval;//time-speed ratio
 
+	ConfigAC();
+	~ConfigAC();
+	void defaultCFG();
+};
 
 /* for detail list */
 enum EVENT {
@@ -72,13 +87,10 @@ enum EVENT {
 /* for GUI label */
 extern const char* ACstr[14];
 
-QString Enum2QStr(int index);
-int QStr2Enum(QString str);
-int Str2Enum(std::string str);
-
 class ParserAC
 {
 public:
+	int ok=1;
 	ParserAC(const std::string& filename);
 	~ParserAC();
 

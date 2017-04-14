@@ -7,14 +7,16 @@ public:
 	int roomID;
 	AC work;
 	CONNECT state;
-	MODE mode;
+	MODE mode, Dmode;
 	WIND wind;
 	double consume;
 	double cost;
-	double Ttarget;
+	double Tenv; // environment temperature
+	double Ttarget; // User set temper
 	double Tcurrent;
 	QHostAddress addr;
 	quint16 port;
+	long sec;
 	QDateTime time;
 	ClientAC();
 	ClientAC(int);

@@ -24,7 +24,7 @@ Request * ReqArray::getReq(int roomID)
 	return nullptr;
 }
 
-int ReqArray::newReq(Request req)
+int ReqArray::updateReq(Request req)
 {
 	return 0;
 }
