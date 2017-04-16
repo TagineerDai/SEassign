@@ -1,2 +1,0 @@
-# SEassign
-se2017

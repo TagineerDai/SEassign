@@ -1,7 +1,7 @@
 100 配置文件初始化错误 ConfigAC.unfilled = false -> ConfigAC()
 101	数据库初始化错误	main.cpp -> initDatabase return false -> mysql_real_connect return false
 102 关闭登陆界面|取消登陆 导致程序退出
-103
+105 初始温度设置出错
 
 configAC.cpp -> configAC()
  1 message box at //MessageBox

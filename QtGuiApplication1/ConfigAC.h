@@ -60,12 +60,14 @@ public:
 #define TCELL 35
 #define TFLOOR 10
 #define TDEFAULT 25
+#define WDEFAULT 2
 
 class ConfigAC{
 public:
 	int port;
 	bool unfilled = true;
 	double Tcell, Tfloor, Tdefault;
+	WIND Wdefault;
 	MODE mode;
 	double Ecost;// price of electric
 	std::vector<double> Epower;// consume of electric/wind

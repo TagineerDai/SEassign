@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>serverWindow</class>
+ <widget class="QWidget" name="serverWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>497</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>serverWindow</string>
+  </property>
+  <widget class="QWidget" name="Wadmin" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>500</width>
+     <height>600</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>500</width>
+     <height>600</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <widget class="QTabWidget" name="tabW">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>461</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="Pcontrol">
+     <attribute name="title">
+      <string>控制界面</string>
+     </attribute>
+     <widget class="QTableWidget" name="roomTable">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>350</y>
+        <width>401</width>
+        <height>153</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>75</number>
+      </attribute>
+      <row>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>2</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>3</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>4</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>运行</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>等待</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>温度</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>目标</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>风速</string>
+       </property>
+      </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string>是</string>
+       </property>
+      </item>
+      <item row="0" column="1">
+       <property name="text">
+        <string>否</string>
+       </property>
+      </item>
+      <item row="0" column="2">
+       <property name="text">
+        <string>18</string>
+       </property>
+      </item>
+      <item row="0" column="3">
+       <property name="text">
+        <string>15</string>
+       </property>
+      </item>
+      <item row="0" column="4">
+       <property name="text">
+        <string>中</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QPushButton" name="Bhalt">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>30</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>退出</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="Bpower">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>30</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>关机</string>
+      </property>
+     </widget>
+     <widget class="QGroupBox" name="Gmode">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>180</y>
+        <width>161</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>模式选择</string>
+      </property>
+      <widget class="QRadioButton" name="Bcool">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>30</y>
+         <width>101</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>制冷</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="Bwarm">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>70</y>
+         <width>101</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>制热</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>180</y>
+        <width>201</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>温度设定</string>
+      </property>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>上限</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_3">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>70</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>下限</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_4">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>110</y>
+         <width>41</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>默认</string>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="CTcell">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>30</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="CTfloor">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>70</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QSpinBox" name="CTdefault">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>110</y>
+         <width>71</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="Bcancel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>80</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>取消更改</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="Bcommit">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>80</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>提交更改</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Ldate">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>30</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>YYYY-MM-dd</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Ltime_2">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>80</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HH-mm-ss</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Lstate">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>130</y>
+        <width>371</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>当前制冷，温度范围AA-BB°C，默认CC°C。</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Pdetail">
+     <attribute name="title">
+      <string>详单查询</string>
+     </attribute>
+     <widget class="QTableWidget" name="detailTable">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>431</width>
+        <height>411</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>70</number>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>房间号</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>风速</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>开始时间</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>结束时间</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>能耗</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>费用</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QSpinBox" name="spinRoom">
+      <property name="geometry">
+       <rect>
+        <x>171</x>
+        <y>461</y>
+        <width>51</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>455</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择房间号：</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="Bquery">
+      <property name="geometry">
+       <rect>
+        <x>264</x>
+        <y>462</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>查询</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="Pbill">
+     <attribute name="title">
+      <string>账单查询</string>
+     </attribute>
+     <widget class="QTableWidget" name="billTable">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>40</y>
+        <width>421</width>
+        <height>421</height>
+       </rect>
+      </property>
+      <column>
+       <property name="text">
+        <string>房间号</string>
+       </property>
+       <property name="font">
+        <font>
+         <family>微软雅黑</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>入住时间</string>
+       </property>
+       <property name="font">
+        <font>
+         <family>微软雅黑</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>当前时间</string>
+       </property>
+       <property name="font">
+        <font>
+         <family>微软雅黑</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>累计费用</string>
+       </property>
+       <property name="font">
+        <font>
+         <family>微软雅黑</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+      </column>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

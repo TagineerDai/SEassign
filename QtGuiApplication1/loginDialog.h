@@ -4,7 +4,7 @@
 #include "ui_loginDialog.h"
 
 extern ROLE role;
-
+extern int room;
 class loginDialog : public QDialog
 {
 	Q_OBJECT

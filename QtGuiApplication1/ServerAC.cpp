@@ -1,9 +1,11 @@
+# pragma execution_character_set("utf-8")
 #include "ServerAC.h"
-
+#include "qdebug.h"
 ServerAC::ServerAC() {
 	Tcell = TCELL;
 	Tfloor = TFLOOR;
 	Tdefault = TDEFAULT;
+	Wdefault = MEDIUM;
 	mode = COOL;
 	work = OFF;
 	Ecost = ELECOST;
@@ -11,12 +13,14 @@ ServerAC::ServerAC() {
 	Epower[1] = POWERLOW;
 	Epower[2] = POWERMEDIUM;
 	Epower[3] = POWERHIGH;
+	
 }
 
 ServerAC::ServerAC(ConfigAC cfg) {
 	Tcell = cfg.Tcell;
 	Tfloor = cfg.Tfloor;
 	Tdefault = cfg.Tdefault;
+	Wdefault = cfg.Wdefault;
 	if (cfg.mode == COOL || cfg.mode == WARM)
 		mode = cfg.mode;
 	else
@@ -41,4 +45,20 @@ ServerAC::ServerAC(ConfigAC cfg) {
 		Epower[2] = POWERMEDIUM;
 		Epower[3] = POWERHIGH;
 	}
+}
+
+void ServerAC::power_off() {
+	work = OFF;
+	qDebug() << "TODO: serverAC -- power_off()";
+}
+
+
+void ServerAC::power_on() {
+	work = ON;
+	qDebug() << "TODO: serverAC -- power_on()";
+}
+
+QString ServerAC::toString() {
+	return (AC2Qstr(work) + MODE2Qstr(mode) + QString(", ÎÂ¶È·¶Î§") + QString::number(Tcell) +
+		QString("¡ãCµ½") + QString::number(Tfloor) + QString("¡ãC, Ä¬ÈÏ") + QString::number(Tdefault) + QString("¡ãC¡£"));
 }

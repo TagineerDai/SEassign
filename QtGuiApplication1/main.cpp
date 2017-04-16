@@ -1,11 +1,14 @@
 # pragma execution_character_set("utf-8")
-#include "mainwindow.h"
+//#include "mainwindow.h"
+#include "serverWindow.h"
+#include "clientWindow.h"
 #include "loginDialog.h"
 #include "ServerAC.h"
+#include "Request.h"
 #include "ClientAC.h"
-#include "ClientArray.h"
 #include "ConfigAC.h"
 #include "DataAC.h"
+#include <qinputdialog.h>
 #include <QtWidgets/QApplication>
 #include <QtCore\qfileinfo.h>
 #include <QtWidgets/QApplication>
@@ -13,19 +16,21 @@
 #include <qdialog.h>
 #include <iostream>
 #include <qmessagebox.h>
-using namespace std;
+#include <qhostaddress.h>
 
-ClientAC client;
-ServerAC server;
-ClientArray clients;
+using namespace std;
+//config
 ConfigAC cfg;
 ROLE role;
-
+bool allowin;
+int room;
+double Tinit;
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	MainWindow w;
-
+	//MainWindow w;
+	serverWindow *ws;
+	clientWindow *wc;
 	if (!initDB()) {
 		QMessageBox::warning(NULL, "提示", "无法启动数据库服务，程序即将关闭。", QMessageBox::Yes | QMessageBox::Cancel);
 		return 101;
@@ -46,12 +51,32 @@ int main(int argc, char *argv[])
 	}
 
 	loginDialog *login = new loginDialog();
+
 	int loginResult = login->exec();
+
 	if (loginResult == QDialog::Rejected) {
 		return 102;
 	}
-	server = ServerAC(cfg);
-	w.initWidget();
-	w.show();
+
+	if (role == ADMIN) {
+		ws = new serverWindow();
+		ws->show();
+	}
+	else {
+		bool ok = FALSE;
+		Tinit = QInputDialog::getDouble(NULL, "输入","请输入房间初始温度", 31, 10, 40, 2, &ok);
+		if (ok)
+			qDebug() << "初始温度" << Tinit;// 用户输入一些东西并且按下OK
+		else
+			return 105;
+		wc = new clientWindow();
+		wc->show();
+	}
+
+	//w.initWidget();
+	//network init 
+	//1. ROLE=ADMIN build server // listen
+	//1. ROLE=ROOM now
+
 	return a.exec();
 }

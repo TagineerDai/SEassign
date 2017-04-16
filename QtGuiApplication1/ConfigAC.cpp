@@ -10,10 +10,10 @@
 QString AC2Qstr(AC ac) {
 	switch (ac) {
 	case OFF:
-		return "关机";
+		return "待机中，";
 		break;
 	case ON:
-		return "开机";
+		return "运行中，";
 		break;
 	}
 }
@@ -49,6 +49,8 @@ QString WIND2Qstr(int w) {
 		return QString("中速");
 	case HIGH:
 		return QString("高速");
+	case NON:
+		return QString("无风");
 	}
 }
 
@@ -61,7 +63,19 @@ ConfigAC::ConfigAC() {
 		parser.get("Tfloor", Tfloor);
 		parser.get("Tdefault", Tdefault);
 		int type;
-		parser.get("workmodel", type);
+		parser.get("Wdefault", type);
+		switch (type) {
+		case 1:
+			Wdefault = LOW;
+			break;
+		case 2:
+			Wdefault = MEDIUM;
+			break;
+		case 3:
+			Wdefault = HIGH;
+			break;
+		}
+		parser.get("workmode", type);
 		if (type == 1) mode = COOL;
 		else mode = WARM;
 		parser.get("interval", interval);
@@ -79,6 +93,7 @@ void ConfigAC::defaultCFG() {
 	Tcell = TCELL;
 	Tfloor = TFLOOR;
 	Tdefault = TDEFAULT;
+	Wdefault = MEDIUM;
 	mode = COOL;
 	Ecost = ELECOST;
 	Epower.push_back(POWERNON);
@@ -203,8 +218,6 @@ ParserAC::KeyValuePair ParserAC::parse(const std::string& line) const
 
 	return std::make_pair(key, value);
 }
-
-
 
 template <typename T>
 void ParserAC::toValue(std::string& str, T& value) const

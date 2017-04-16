@@ -23,6 +23,8 @@ void loginDialog::on_Blogin_clicked() {
 		role = ROOM;
 		qDebug() << "ROOM!";
 		if (varifyRoom(this->ui.roomuser->text(), this->ui.roompwd->text())) {
+			room = this->ui.roomuser->text().toInt();
+			role = ROOM;
 			this->accept();
 			return;
 		}
@@ -35,6 +37,7 @@ void loginDialog::on_Blogin_clicked() {
 		role = ADMIN;
 		qDebug() << "ADMIN!";
 		if (varifyAdmin(this->ui.adminuser->text(), this->ui.adminpwd->text())) {
+			role = ADMIN;
 			this->accept();
 			return;
 		}
@@ -45,6 +48,7 @@ void loginDialog::on_Blogin_clicked() {
 		}
 	}
 }
+
 void loginDialog::on_Bcancel_clicked() {
 	this->reject();
 	return;

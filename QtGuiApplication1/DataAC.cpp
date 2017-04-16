@@ -1,7 +1,7 @@
 #include "DataAC.h"
 #include "ConfigAC.h"
 #include "qdebug.h"
-
+#include <sstream>
 bool getDB(MYSQL *db) {
 	mysql_init(db);
 	MySQLSetting dbc = MySQLSetting();
@@ -71,6 +71,40 @@ Admin::Admin(QString usr, QString pwd) {
 	return;
 }
 
+User::User(QString _usr, QString _pwd) {
+	MYSQL db;
+	QString qstr;
+	MYSQL_RES *res_ptr;
+	MYSQL_ROW record;
+	roomID = _usr.toInt();
+	qDebug() << roomID;
+	MySQLSetting dbc = MySQLSetting();
+	mysql_init(&db);
+	if (mysql_real_connect(&db, dbc.host, dbc.user, dbc.pswd, dbc.table, dbc.port, NULL, 0))
+		qDebug() << "Connected!";
+	else return;
+	mysql_query(&db, "USE `DAC`");
+	qstr = QString("select `password` from `room` where roomID = ") + QString::number(roomID, 10);
+	qDebug() << qstr;
+	int Qdone = mysql_query(&db, qstr.toStdString().c_str());
+	if (Qdone == 0) {
+		res_ptr = mysql_store_result(&db);
+		if (mysql_num_rows(res_ptr) == 1) {
+			record = mysql_fetch_row(res_ptr);
+			qDebug() << "query answer!!!" << record[0] << endl;
+			int issame = QString::compare(QString(record[0]), _pwd);
+			if (issame == 0) varified = true;
+		}
+		else {
+			qDebug() << "rownumber error :" << mysql_num_rows(res_ptr);
+		}
+		mysql_free_result(res_ptr);
+	}
+	else {
+		qDebug() << "query string should be char* = = false";
+	}
+	mysql_close(&db);
+}
 
 REC getdetail(int roomID) {
 	//MYSQL db = getDB();
