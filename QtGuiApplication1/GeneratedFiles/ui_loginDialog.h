@@ -113,6 +113,8 @@ public:
         loginDialog->setWindowTitle(QApplication::translate("loginDialog", "loginDialog", Q_NULLPTR));
         L1user->setText(QApplication::translate("loginDialog", "\347\224\250\346\210\267\345\220\215", Q_NULLPTR));
         L1pwd->setText(QApplication::translate("loginDialog", "\345\257\206\347\240\201", Q_NULLPTR));
+        adminuser->setText(QApplication::translate("loginDialog", "admin", Q_NULLPTR));
+        adminpwd->setText(QApplication::translate("loginDialog", "SE2017", Q_NULLPTR));
         roleTab->setTabText(roleTab->indexOf(admin), QApplication::translate("loginDialog", "\347\256\241\347\220\206\345\221\230\347\231\273\351\231\206", Q_NULLPTR));
         L2user->setText(QApplication::translate("loginDialog", "\347\224\250\346\210\267\345\220\215", Q_NULLPTR));
         L2pwd->setText(QApplication::translate("loginDialog", "\345\257\206\347\240\201", Q_NULLPTR));

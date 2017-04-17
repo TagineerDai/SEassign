@@ -16,23 +16,29 @@ clientWindow::clientWindow(QWidget *parent)
 	tcpSocket->connectToHost(hostAddr, hostPort);
 	connect(tcpSocket, SIGNAL(connected()), this, SLOT(connected()));
 	connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(clientRead()));
-
+	
+	//two error message? //TODO
 	connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
 		this, SLOT(displayError(QAbstractSocket::SocketError)));
-	//GUI
+	//INIT
 	client.roomID = room;
 	client.Tenv = Tinit;
 	client.Tcurrent = Tinit;
 	client.state = OFFC;
-
+	//client.autoUpdate = true;
+	//client.waiting = false;
+	//moved into ClientAC.h member init
+	
+	//GUI
+	this->setGeometry(100, 100, 400, 350);
+	/*
 	this->ui.LroomID->setText((QString::number(client.roomID, 10) + QString("号房间")));
 	this->ui.NTnow->display(client.Tcurrent);
-	this->ui.NTtarget->display("");
+	this->ui.NTtarget->display("--");
 	this->ui.Ncost->display(0);
 	this->ui.Lconnect->setText("等待");
 	this->ui.Bon->setText(QString("开机"));
 	this->ui.Ltime->setText(QString(""));
-	this->setGeometry(100, 100, 400, 350);
 	this->ui.Bon->setCheckable(false);
 	this->ui.W1->setCheckable(false);
 	this->ui.W2->setCheckable(false);
@@ -40,8 +46,10 @@ clientWindow::clientWindow(QWidget *parent)
 	this->ui.Btemp->setDisabled(true);
 	this->ui.Bon->setDisabled(true);
 	this->ui.STemp->setDisabled(true);
-	this->ui.Lwind->setText("无");
+	this->ui.Lwind->setText("无风");
 	this->ui.Lwait->setText("是");
+	*/
+	updateLabel();
 	C_I();
 	timer->start();
 }
@@ -54,7 +62,7 @@ void clientWindow::updateFunction() {
 
 	//TODO : check the autoUpdate value
 	
-	if (!client.autoUpdate) {//主机控制
+	if (!client.autoUpdate && client.work == ON) {//开机 | 并由主机控制
 		if (client.Ttarget == client.Tcurrent) {
 			//达到目标温度(receive A)
 			client.waiting = false;
@@ -66,7 +74,7 @@ void clientWindow::updateFunction() {
 			client.Tcurrent -= 0.03;
 		if (client.Tcurrent < client.Tenv)
 			client.Tcurrent += 0.03;
-		if (client.waiting == false && abs(client.Tcurrent - client.Ttarget) > 1) {
+		if (client.work == ON && client.waiting == false && abs(client.Tcurrent - client.Ttarget) > 1) {
 			C_G();
 			//client.waiting == false ： make sure C_G() be sent only once;
 			client.waiting = true;
@@ -74,6 +82,7 @@ void clientWindow::updateFunction() {
 	}
 	//GUI update;
 	updateLabel();
+	C_C();
 }
 
 void clientWindow::updateLabel() {
@@ -174,9 +183,8 @@ void clientWindow::on_Bcout_clicked() {
 		case QMessageBox::Yes:
 			qDebug() << "Y";
 			C_Q();
-			//close()
 			//主控机直接收close()会雪崩
-			//close()统一在C_Q之后吧
+			//close window 统一在C_Q之后吧
 			break;
 		case QMessageBox::No:
 		default:
@@ -340,13 +348,12 @@ void clientWindow::C_I() {
 	out << quint16(0) << quint8('I') << client.roomID << client.Tenv;
 	out.device()->seek(0);
 	out << quint16(block.size() - sizeof(quint16));
-	qDebug() << "blockSize " << quint16(block.size() - sizeof(quint16));
 	tcpSocket->write(block);
-	qDebug() << "block " << block;
 }
 
 void clientWindow::C_B() {
 	block.clear();
+	qDebug() << "Send B";
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('B') << client.roomID;
@@ -357,6 +364,7 @@ void clientWindow::C_B() {
 
 void clientWindow::C_E() {
 	block.clear();
+	qDebug() << "Send E";
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('E') << client.roomID;
@@ -379,9 +387,9 @@ void clientWindow::C_Q() {
 
 void clientWindow::C_T() {
 	block.clear();
-	qDebug() << "Send Target";
+	qDebug() << "Send Target temp" << client.Ttarget;
 	QDataStream out(&block, QIODevice::WriteOnly);
-	out.setVersion(QDataStream::Qt_5_7);
+	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('T') << client.roomID << client.Ttarget;
 	out.device()->seek(0);
 	out << quint16(block.size() - sizeof(quint16));
@@ -390,8 +398,9 @@ void clientWindow::C_T() {
 
 void clientWindow::C_G() {
 	block.clear();
+	qDebug() << "Send G";
 	QDataStream out(&block, QIODevice::WriteOnly);
-	out.setVersion(QDataStream::Qt_5_7);
+	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('G') << client.roomID << client.Ttarget;
 	out.device()->seek(0);
 	out << quint16(block.size() - sizeof(quint16));
@@ -400,8 +409,9 @@ void clientWindow::C_G() {
 
 void clientWindow::C_C() {
 	block.clear();
+	qDebug() << "Send C" << client.Tcurrent;
 	QDataStream out(&block, QIODevice::WriteOnly);
-	out.setVersion(QDataStream::Qt_5_7);
+	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('C') << client.roomID << client.Tcurrent;
 	out.device()->seek(0);
 	out << quint16(block.size() - sizeof(quint16));

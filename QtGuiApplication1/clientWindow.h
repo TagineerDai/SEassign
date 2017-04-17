@@ -43,7 +43,7 @@ signals:
 	void dataRecived();
 private:
 	int hostPort = 6666;
-	QHostAddress hostAddr = QHostAddress::LocalHost;
+	QHostAddress hostAddr = QHostAddress("10.8.189.223");
 	Ui::clientWindow ui;
 	QTcpSocket *tcpSocket;
 	ClientAC client;

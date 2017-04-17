@@ -1,5 +1,4 @@
 # pragma execution_character_set("utf-8")
-//#include "mainwindow.h"
 #include "serverWindow.h"
 #include "clientWindow.h"
 #include "loginDialog.h"
@@ -20,11 +19,13 @@
 
 using namespace std;
 //config
+
 ConfigAC cfg;
+int room;
 ROLE role;
 bool allowin;
-int room;
 double Tinit;
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

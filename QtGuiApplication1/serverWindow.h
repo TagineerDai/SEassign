@@ -37,7 +37,7 @@ private slots:
 	//admin-Pdetail
 	void on_Bquery_clicked();
 signals:
-	void dataRecivedS(); //emit by ReadClient()
+	void dataRecivedS(); //emit by readClient(), received by updateFunction()
 private:
 	Ui::serverWindow ui;
 	QTimer * timer;
@@ -48,17 +48,16 @@ private:
 
 	//TCP related
 	QTcpServer * tcpServer;
-	QVector<QTcpSocket*> tcpConnects;
 	QTcpSocket* target[4];
 	QByteArray block;
 	quint16 blockSize;
 	quint8 type;
-	int listenPort = 1111;
+	int listenPort = 6666;
 	QHostAddress listenAddr = QHostAddress::Any;
 	void power_on();
 	void power_off();
 
-	void S_I(QTcpSocket* target, int cid,  bool success);
+	void S_I(QTcpSocket* target, bool success);
 	void S_P(QTcpSocket* target);
 	void S_O(QTcpSocket* target, double cost, double Tcurrent);
 	void S_H(QTcpSocket* target, bool hang);

@@ -19,8 +19,8 @@ public:
 	double Ttarget; // User set temper
 	double Tcurrent;
 	double Tdefault, Tcell, Tfloor; 
-	bool waiting;
-	bool autoUpdate;//For H and A
+	bool autoUpdate = true;
+	bool waiting = false;
 	Request req;
 	QHostAddress addr;
 	quint16 port;

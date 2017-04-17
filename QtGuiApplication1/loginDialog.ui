@@ -70,6 +70,9 @@
        <height>20</height>
       </rect>
      </property>
+     <property name="text">
+      <string>admin</string>
+     </property>
     </widget>
     <widget class="QLineEdit" name="adminpwd">
      <property name="geometry">
@@ -79,6 +82,9 @@
        <width>113</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="text">
+      <string>SE2017</string>
      </property>
     </widget>
    </widget>
