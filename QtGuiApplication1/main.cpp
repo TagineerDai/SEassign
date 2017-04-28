@@ -26,6 +26,10 @@ ROLE role;
 bool allowin;
 double Tinit;
 
+//for user login
+QHostAddress r_addr;
+quint16 r_port;
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

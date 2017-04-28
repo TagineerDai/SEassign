@@ -3,6 +3,8 @@
 #include "qmessagebox.h"
 #include "qdebug.h"
 #include "DataAC.h"
+
+
 loginDialog::loginDialog(QWidget *parent)
 	: QDialog(parent)
 {
@@ -22,6 +24,21 @@ void loginDialog::on_Blogin_clicked() {
 	if (isroom) {
 		role = ROOM;
 		qDebug() << "ROOM!";
+		
+		//check the port and ip
+		QString str_ip = this->ui.roomip->text();
+		QString str_port = this->ui.roomport->text();
+		qDebug() << str_ip << str_port;
+
+		bool ac = r_addr.setAddress(str_ip);
+		r_port = str_port.toInt();
+		if(r_port < 1 || r_port > 65535 || ac==false ) {
+		QMessageBox::warning(NULL, "错误", "无效地址，请重试。", QMessageBox::Yes | QMessageBox::Cancel);
+		this->ui.roompwd->setText(QString(""));
+		this->ui.roomip->setText(QString(""));
+		this->ui.roomport->setText(QString(""));
+		return;
+		}
 		if (varifyRoom(this->ui.roomuser->text(), this->ui.roompwd->text())) {
 			room = this->ui.roomuser->text().toInt();
 			role = ROOM;

@@ -6,6 +6,9 @@
 #include "ServerAC.h"
 #include "Request.h"
 
+extern QHostAddress r_addr;
+extern quint16 r_port;
+
 class ClientAC {
 public:
 	int roomID;

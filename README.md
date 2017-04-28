@@ -1,10 +1,10 @@
-### SEassign
-Tagineer Dai
+### SEassign  
+Tagineer Dai  
+
 ##### TODO list after mid-term inspection [2017-4-17]
 
 + uncouple the TcpSocket and GUI
 + fix the hard-coded bug
-  - listen port/ host port/ host addr should be added to loginWindow
   - the auto change of temperature should be added to ConfigAC and config parser
 + Design a new interface
   - At client, the target temperature and wind ratio should support sended at the same time.
@@ -20,4 +20,7 @@ Tagineer Dai
   - Request list -> Table/Database
   - NEED for statistic?
   - Design the Log
-  - A driver for Database->LogFile given B/E of time
+  - A driver for Database->LogFile given B/E of time  
+
+##### 2017-4-28  
++ The hard-coded bug fixed in the LoginWindow.

@@ -14,6 +14,8 @@ ClientAC::ClientAC() {
 	Tfloor = 14;
 	Tdefault = 25;
 	Ttarget = Tdefault;
+	addr = r_addr;
+	port= r_port;
 }
 //When receiving the I<<false
 ClientAC::~ClientAC() {};
@@ -24,7 +26,7 @@ ClientAC::ClientAC(int cid, double _Tinit) {
 	work = OFF;
 }
 
-//ClientAC(int, QHostAddress, quint16);
+
 QString ClientAC::toString() {
 	char* str, *Tf1, *Tf2;
 	sprintf(str, "Room %d ", roomID);

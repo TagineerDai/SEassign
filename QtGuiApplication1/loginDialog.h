@@ -1,10 +1,13 @@
 #pragma once
 #include "ConfigAC.h"
 #include <QDialog>
+#include <qhostaddress.h>
 #include "ui_loginDialog.h"
-
 extern ROLE role;
 extern int room;
+extern QHostAddress r_addr;
+extern quint16 r_port;
+
 class loginDialog : public QDialog
 {
 	Q_OBJECT

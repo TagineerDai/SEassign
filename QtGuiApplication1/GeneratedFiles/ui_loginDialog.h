@@ -37,6 +37,10 @@ public:
     QLabel *L2pwd;
     QLineEdit *roompwd;
     QLineEdit *roomuser;
+    QLineEdit *roomport;
+    QLabel *L2port;
+    QLabel *L2ip;
+    QLineEdit *roomip;
     QLabel *loginLabel;
     QPushButton *Bhelp;
     QPushButton *Blogin;
@@ -46,10 +50,10 @@ public:
     {
         if (loginDialog->objectName().isEmpty())
             loginDialog->setObjectName(QStringLiteral("loginDialog"));
-        loginDialog->resize(344, 228);
+        loginDialog->resize(354, 291);
         roleTab = new QTabWidget(loginDialog);
         roleTab->setObjectName(QStringLiteral("roleTab"));
-        roleTab->setGeometry(QRect(20, 70, 311, 111));
+        roleTab->setGeometry(QRect(20, 70, 311, 161));
         roleTab->setAcceptDrops(true);
         roleTab->setTabBarAutoHide(false);
         admin = new QWidget();
@@ -81,6 +85,18 @@ public:
         roomuser = new QLineEdit(user);
         roomuser->setObjectName(QStringLiteral("roomuser"));
         roomuser->setGeometry(QRect(80, 15, 113, 20));
+        roomport = new QLineEdit(user);
+        roomport->setObjectName(QStringLiteral("roomport"));
+        roomport->setGeometry(QRect(80, 110, 113, 20));
+        L2port = new QLabel(user);
+        L2port->setObjectName(QStringLiteral("L2port"));
+        L2port->setGeometry(QRect(20, 115, 54, 12));
+        L2ip = new QLabel(user);
+        L2ip->setObjectName(QStringLiteral("L2ip"));
+        L2ip->setGeometry(QRect(20, 85, 54, 12));
+        roomip = new QLineEdit(user);
+        roomip->setObjectName(QStringLiteral("roomip"));
+        roomip->setGeometry(QRect(80, 80, 113, 20));
         roleTab->addTab(user, QString());
         loginLabel = new QLabel(loginDialog);
         loginLabel->setObjectName(QStringLiteral("loginLabel"));
@@ -91,18 +107,18 @@ public:
         loginLabel->setFont(font);
         Bhelp = new QPushButton(loginDialog);
         Bhelp->setObjectName(QStringLiteral("Bhelp"));
-        Bhelp->setGeometry(QRect(20, 190, 75, 23));
+        Bhelp->setGeometry(QRect(20, 250, 75, 23));
         Blogin = new QPushButton(loginDialog);
         Blogin->setObjectName(QStringLiteral("Blogin"));
-        Blogin->setGeometry(QRect(160, 190, 75, 23));
+        Blogin->setGeometry(QRect(160, 250, 75, 23));
         Bcancel = new QPushButton(loginDialog);
         Bcancel->setObjectName(QStringLiteral("Bcancel"));
-        Bcancel->setGeometry(QRect(250, 190, 75, 23));
+        Bcancel->setGeometry(QRect(250, 250, 75, 23));
 
         retranslateUi(loginDialog);
         QObject::connect(Bcancel, SIGNAL(clicked()), loginDialog, SLOT(reject()));
 
-        roleTab->setCurrentIndex(0);
+        roleTab->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(loginDialog);
@@ -118,6 +134,10 @@ public:
         roleTab->setTabText(roleTab->indexOf(admin), QApplication::translate("loginDialog", "\347\256\241\347\220\206\345\221\230\347\231\273\351\231\206", Q_NULLPTR));
         L2user->setText(QApplication::translate("loginDialog", "\347\224\250\346\210\267\345\220\215", Q_NULLPTR));
         L2pwd->setText(QApplication::translate("loginDialog", "\345\257\206\347\240\201", Q_NULLPTR));
+        roomport->setText(QApplication::translate("loginDialog", "6666", Q_NULLPTR));
+        L2port->setText(QApplication::translate("loginDialog", "\347\253\257\345\217\243\345\217\267", Q_NULLPTR));
+        L2ip->setText(QApplication::translate("loginDialog", "\345\234\260\345\235\200", Q_NULLPTR));
+        roomip->setText(QApplication::translate("loginDialog", "127.0.0.1", Q_NULLPTR));
         roleTab->setTabText(roleTab->indexOf(user), QApplication::translate("loginDialog", "\346\210\277\351\227\264\347\231\273\351\231\206", Q_NULLPTR));
         loginLabel->setText(QApplication::translate("loginDialog", "\347\263\273\347\273\237\347\231\273\351\231\206", Q_NULLPTR));
         Bhelp->setText(QApplication::translate("loginDialog", "\345\270\256\345\212\251", Q_NULLPTR));
