@@ -7,7 +7,6 @@
 #include "ConfigAC.h"
 #include "ServerAC.h"
 #include "ClientAC.h"
-#include "Request.h"
 #include "qtcpserver.h"
 #include "qtcpsocket.h"
 #include "qdatetime.h"
@@ -23,26 +22,28 @@ class serverWindow : public QWidget
 public:
 	serverWindow(QWidget *parent = Q_NULLPTR);
 	~serverWindow();
-public slots:
-	//void sendData(QString data); //TODO TCP
+
 private slots:
 	void newConn(); //TCP --> readClient
 	void readClient(); //TCP --> loop handle the messages
 	void updateFunction();
+	void updateLabel();
+
 	//admin-Pcontrol
 	void on_Bpower_clicked();
 	void on_Bcancel_clicked();
 	void on_Bcommit_clicked();
 	void on_Bhalt_clicked();
+
 	//admin-Pdetail
 	void on_Bquery_clicked();
+
 signals:
 	void dataRecivedS(); //emit by readClient(), received by updateFunction()
 private:
 	Ui::serverWindow ui;
 	QTimer * timer;
 
-	Request reqs[5];
 	ServerAC * server;
 	ClientAC * clients[4];
 
@@ -57,10 +58,23 @@ private:
 	void power_on();
 	void power_off();
 
+	//send message (target socket + info)
 	void S_I(QTcpSocket* target, bool success);
 	void S_P(QTcpSocket* target);
 	void S_O(QTcpSocket* target, double cost, double Tcurrent);
 	void S_H(QTcpSocket* target, bool hang);
 	void S_A(QTcpSocket* target);
-	void updateLabel();
+
+	//cope with received message (cid + info)
+	void serverWindow::C_I(int cid, double Tenv, QTcpSocket* client);
+	void serverWindow::C_B(int cid);
+	void serverWindow::C_E(int cid);
+	void serverWindow::C_Q(int cid);
+	void serverWindow::C_R(int cid, int wind);
+	void serverWindow::C_C(int cid, double Tcurrent);
+	void serverWindow::C_T(int cid, double Ttarget);
+	void serverWindow::C_G(int cid);
+
+	void dispatch();
+	void initLabel();
 };

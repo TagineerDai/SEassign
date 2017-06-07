@@ -5,9 +5,9 @@ clientWindow::clientWindow(QWidget *parent)
 {
 	ui.setupUi(this);
 	timer = new QTimer(this);
-
-	timer->setInterval(1000 * cfg.interval);
+	timer->setInterval(1000);//Real time = virtual time
 	timer->setSingleShot(false);
+
 	// 刷新条件更新：收到信息 | 每秒更新
 	connect(timer, SIGNAL(timeout()), this, SLOT(updateFunction()));
 	connect(this, SIGNAL(dataRecived()), this, SLOT(updateFunction()));
@@ -21,234 +21,237 @@ clientWindow::clientWindow(QWidget *parent)
 	connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
 		this, SLOT(displayError(QAbstractSocket::SocketError)));
 	//INIT
-	client.roomID = room;
-	client.Tenv = Tinit;
-	client.Tcurrent = Tinit;
-	client.state = OFFC;
-	//client.autoUpdate = true;
-	//client.waiting = false;
-	//moved into ClientAC.h member init
+	//client = ClientAC();
+	client = ClientAC(room, Tinit);
+	//Moved to when receiving S_I();
 	
 	//GUI
 	this->setGeometry(100, 100, 400, 350);
-	/*
-	this->ui.LroomID->setText((QString::number(client.roomID, 10) + QString("号房间")));
-	this->ui.NTnow->display(client.Tcurrent);
-	this->ui.NTtarget->display("--");
-	this->ui.Ncost->display(0);
-	this->ui.Lconnect->setText("等待");
-	this->ui.Bon->setText(QString("开机"));
-	this->ui.Ltime->setText(QString(""));
-	this->ui.Bon->setCheckable(false);
-	this->ui.W1->setCheckable(false);
-	this->ui.W2->setCheckable(false);
-	this->ui.W3->setCheckable(false);
-	this->ui.Btemp->setDisabled(true);
-	this->ui.Bon->setDisabled(true);
-	this->ui.STemp->setDisabled(true);
-	this->ui.Lwind->setText("无风");
-	this->ui.Lwait->setText("是");
-	*/
-	updateLabel();
-	C_I();
+	initLabel();
+
+	C_I(); //require to enter the system.
 	timer->start();
 }
 
-clientWindow::~clientWindow()
-{
-}
+clientWindow::~clientWindow() {}
 
 void clientWindow::updateFunction() {
 
 	//TODO : check the autoUpdate value
-	
-	if (!client.autoUpdate && client.work == ON) {//开机 | 并由主机控制
-		if (client.Ttarget == client.Tcurrent) {
-			//达到目标温度(receive A)
-			client.waiting = false;
-			client.autoUpdate = true;
+	if (client.power == true) {
+		if (client.run == false) {
+			//自动温度变化
+			if (client.Tenv - client.Tcurrent > cfg.Vtemp)
+				client.Tcurrent += cfg.Vtemp;
+			else if (client.Tenv > client.Tcurrent)
+				client.Tcurrent = client.Tenv;
+			else if (client.Tcurrent - client.Tenv > cfg.Vtemp)
+				client.Tcurrent -= cfg.Vtemp;
+			else if (client.Tenv < client.Tcurrent)
+				client.Tcurrent = client.Tenv;
+			C_C();
+			//是否和目标温度相差一度？
+			if (abs(client.Tcurrent - client.Ttarget) > 1.0 && client.req == false) {
+				client.req = true;
+				C_T();
+			}
+		}
+		else {//client.run == true
+			//温度中央空调控制
+			//是否达到目标温度
+			if (client.Ttarget >= client.Tcurrent && client.mode == COOL ||
+				client.Ttarget <= client.Tcurrent && client.mode == WARM) {//达到目标温度
+				client.req = false;
+				//			到达目标温度，到达后是否停止工作是谁控制?自己停止还是受到S_A以后?
+				//client.run = false;  暂定受到S_A以后 
+
+				C_G();
+			}
 		}
 	}
-	else{//自动变化
-		if (client.Tcurrent > client.Tenv)
-			client.Tcurrent -= 0.03;
-		if (client.Tcurrent < client.Tenv)
-			client.Tcurrent += 0.03;
-		if (client.work == ON && client.waiting == false && abs(client.Tcurrent - client.Ttarget) > 1) {
-			C_G();
-			//client.waiting == false ： make sure C_G() be sent only once;
-			client.waiting = true;
-		}
+	else {//client.power == false
+		//自动温度变化
+		if (client.Tenv - client.Tcurrent > cfg.Vtemp)
+			client.Tcurrent += cfg.Vtemp;
+		else if (client.Tenv > client.Tcurrent)
+			client.Tcurrent = client.Tenv;
+		else if (client.Tcurrent - client.Tenv > cfg.Vtemp)
+			client.Tcurrent -= cfg.Vtemp;
+		else if (client.Tenv < client.Tcurrent)
+			client.Tcurrent = client.Tenv;
+		C_C();
 	}
+
 	//GUI update;
 	updateLabel();
-	C_C();
+}
+
+void clientWindow::initLabel() {
+	client.roomID = room;
+	this->ui.LroomID->setText((QString::number(client.roomID, 10) + QString("号房间")));
+	this->ui.Ltime->setText(QDateTime::currentDateTime().toString(QString("yyyy年MM月dd日 HH:mm:ss")));
+
+	this->ui.Ncost->display(client.cost);
+	this->ui.NTnow->display(client.Tcurrent);
+	this->ui.NTtarget->display(client.Ttarget);
+
+	this->ui.Lwait->setText("否");
+	this->ui.LWcurrent->setText("无");
+	this->ui.LWtarget->setText("中");
+
+	this->ui.Bsubmit->setDisabled(true);
+	this->ui.W1->setCheckable(false);
+	this->ui.W2->setCheckable(false);
+	this->ui.W3->setCheckable(false);
+
+	this->ui.Bon->setText(QString("开机"));
+	return;
 }
 
 void clientWindow::updateLabel() {
+	this->ui.LroomID->setText((QString::number(client.roomID, 10) + QString("号房间")));
 	this->ui.Ltime->setText(QDateTime::currentDateTime().toString(QString("yyyy年MM月dd日 HH:mm:ss")));
-	this->ui.STemp->setRange(client.Tfloor, client.Tcell);
-	switch (client.state) {
-	case ONC:
-		this->ui.Bon->setDisabled(false);
-		this->ui.Bon->setCheckable(true);
-		this->ui.Ncost->display(client.cost);
-		this->ui.NTnow->display(client.Tcurrent);
-		if (client.work) { //ON
-			this->ui.Bon->setText("关机");
-			this->ui.NTtarget->display(client.Ttarget);
-			switch (client.wind) {
-			case HIGH:
-				this->ui.Lwind->setText("高速");
-				break;
-			case MEDIUM:
-				this->ui.Lwind->setText("中速");
-				break;
-			case LOW:
-				this->ui.Lwind->setText("低速");
-				break;
-			}
-			if (this->ui.W1->isCheckable() == false) {
-				this->ui.W1->setCheckable(true);
-				this->ui.W2->setCheckable(true);
-				this->ui.W3->setCheckable(true);
-				switch (client.wind) {
-				case(HIGH):
-					this->ui.W3->setChecked(true);
-					break;
-				case(MEDIUM):
-					this->ui.W2->setChecked(true);
-					break;
-				case(LOW):
-					this->ui.W1->setChecked(true);
-					break;
-				}
-			}
-			this->ui.Btemp->setDisabled(false);
-			this->ui.STemp->setDisabled(false);
-			this->ui.Bcout->setDisabled(true);
-		}
-		else { //OFF
-			this->ui.Bon->setText("开机");
-			this->ui.NTtarget->display("--");
-			this->ui.Lwind->setText("无风");
-			this->ui.W1->setCheckable(false);
-			this->ui.W2->setCheckable(false);
-			this->ui.W3->setCheckable(false);
-			this->ui.Btemp->setDisabled(true);
-			this->ui.STemp->setDisabled(true);
-			this->ui.Bcout->setDisabled(false);
-		}
-		this->ui.Lconnect->setText("正常");
-		if (client.waiting && client.work == ON)
-			this->ui.Lwait->setText("是");
-		else
-			this->ui.Lwait->setText("否");
-		break;
-	case OFFC:
-	default:
-		this->ui.Bcout->setCheckable(true);
-		this->ui.Bon->setCheckable(false);
+
+	this->ui.Ncost->display(client.cost);
+	this->ui.NTnow->display(client.Tcurrent);
+
+	if(client.power==false){//关机状态下
+		this->ui.NTtarget->display("--");
+
+		this->ui.Lwait->setText("否");
+		this->ui.LWcurrent->setText(WIND2Qstr(NON));
+		this->ui.LWtarget->setText(WIND2Qstr(client.wind));
+
+		this->ui.Bsubmit->setDisabled(true);
+		this->ui.STemp->setRange(client.Tfloor, client.Tcell);
+		this->ui.STemp->setValue(client.Tdefault);
+		this->ui.STemp->setDisabled(true);
 		this->ui.W1->setCheckable(false);
 		this->ui.W2->setCheckable(false);
 		this->ui.W3->setCheckable(false);
-		this->ui.Btemp->setDisabled(true);
-		this->ui.Bon->setDisabled(true);
-		this->ui.STemp->setDisabled(true);
-		this->ui.Lconnect->setText("等待");
-		this->ui.Ncost->display("--");
-		this->ui.NTnow->display(client.Tcurrent);
-		this->ui.NTtarget->display("--");
-		this->ui.Lwait->setText("是");
-		this->ui.Lwind->setText("无风");
-		break;
+
+		this->ui.Bon->setText(QString("开机"));
+		this->ui.Bcout->setDisabled(false);
+	}
+	else {//开机状态下：
+		this->ui.NTtarget->display(client.Ttarget);
+		
+		if (client.req == true && client.run == false)
+			this->ui.Lwait->setText("是");
+		else this->ui.Lwait->setText("否");
+		
+		if(client.run == false) this->ui.LWcurrent->setText("无风");
+		else
+			switch (client.wind) {
+			case HIGH:
+				this->ui.LWcurrent->setText("高速");
+				break;
+			case MEDIUM:
+				this->ui.LWcurrent->setText("中速");
+				break;
+			case LOW:
+				this->ui.LWcurrent->setText("低速");
+				break;
+			}
+
+		switch (client.wind) {
+		case HIGH:
+			this->ui.LWtarget->setText("高速");
+			break;
+		case MEDIUM:
+			this->ui.LWtarget->setText("中速");
+			break;
+		case LOW:
+			this->ui.LWtarget->setText("低速");
+			break;
+		}
+		
+		this->ui.Bsubmit->setDisabled(false);
+		this->ui.STemp->setDisabled(false);
+		this->ui.W1->setCheckable(true);
+		this->ui.W2->setCheckable(true);
+		this->ui.W3->setCheckable(true);
+
+		this->ui.Bon->setText("关机");
+		this->ui.Bcout->setDisabled(true);
 	}
 }
 
 //room functional buttons
 
+//Quit button
 void clientWindow::on_Bcout_clicked() {
 	{
 		qDebug() << "closeButton | 退房";
-		if (client.work == ON) {
+		if (client.power == true) {
 			qDebug() << "请先关机，开机状态下无法退房。";
 			QMessageBox::warning(NULL, "提示", "请先关机，开机状态下无法退房。", QMessageBox::Yes | QMessageBox::Cancel);
 			return;
 		}
-		//int costnow = (int)client.cost;
-		//qDebug() << "账单" << client.cost;
+		qDebug() << "账单" << client.cost;
 		QString str = QString("账单共计") + QString::number(client.cost, 'g', 2) + QString("元，是否现在退房并结账？");
 		int checkout = QMessageBox::question(NULL, "退房", str, QMessageBox::Yes | QMessageBox::No);
 		switch (checkout) {
-		case QMessageBox::Yes:
-			qDebug() << "Y";
+		case QMessageBox::Yes: {
+			qDebug() << "Quit? Y";
 			C_Q();
 			//主控机直接收close()会雪崩
-			//close window 统一在C_Q之后吧
-			break;
+			//不要直接点close啊啊啊啊！quit！quit就行了！
+			break; }
 		case QMessageBox::No:
-		default:
-			qDebug() << "N";
+		default: {
+			qDebug() << "Quit? N";
 			return;
-			break;
+			break; 
+		}
 		}
 	}
 }
 
+//Power button
 void clientWindow::on_Bon_clicked() {
 	int acoff = QString::compare(this->ui.Bon->text(), QString("关机"));
 	if (acoff == 0) {//关机
-		//this->ui.Bcout->setDisabled(false);
-		//timer->stop();
-		client.work = OFF;
-		client.autoUpdate = true;
+		client.power_off();
 		C_E();
-		updateLabel();
-		//发送信息和更新的顺序必须不能变。。。
 	}
 	else {//开机
-		//timer->start();
-		qDebug() << "SEND AC POWER ON//TODO";
-		qDebug() << "SEND the FIRST req";
-		client.work = ON;
-		C_B();// immediately stoped by the Mode received from the server;
-		//to stop the next req to be recived.
-		//C_T();
-		//C_R();
-		updateLabel();
+		client.power_on();
+		C_B();
 	}
+	updateLabel();
 }
 
-void clientWindow::on_Btemp_clicked() {
-	client.Ttarget = this->ui.STemp->value();
+//submit the Ttarget / Wind
+void clientWindow::on_Bsubmit_clicked() {
+
+	client.set_temp_target(this->ui.STemp->value());
 	C_T();
+	qDebug() << "Send T" << client.Ttarget;
+
+	client.set_wind((WIND)windbtn);
+	C_R();
+	qDebug() << "Send R" << windbtn;
+	updateLabel();
 }
 
+//Press wind btns
 void clientWindow::on_W1_clicked() {
-	if (client.wind == LOW || client.work == OFF)
-		return;
-	client.waiting = true;
-	client.wind = LOW;
-	C_R();
-	qDebug() << "REQ WIND LOW";
+	windbtn = 1;
+	qDebug() << "PRESSED WIND LOW";
+	updateLabel();
 }
 
 void clientWindow::on_W2_clicked() {
-	if (client.wind == MEDIUM || client.work == OFF)
-		return;
-	client.wind = MEDIUM;
-	client.waiting = true;
-	C_R();
-	qDebug() << "REQ WIND MEDIUM";
+	windbtn = 2;
+	qDebug() << "PRESSED WIND MEDIUM";
+	updateLabel();
 }
 
 void clientWindow::on_W3_clicked() {
-	if (client.wind == HIGH || client.work == OFF)
-		return;
-	client.wind = HIGH;
-	client.waiting = true;
-	C_R();
-	qDebug() << "REQ WIND HIGH";
+	windbtn = 3;
+	qDebug() << "PRESSED WIND HIGH";
+	updateLabel();
 }
 
 //Connected()
@@ -259,20 +262,21 @@ void clientWindow::connected() {
 
 //Read message ServerAC --> ClientAC
 
+
 void clientWindow::clientRead() {
 	QDataStream in(tcpSocket);
 	in.setVersion(QDataStream::Qt_5_2);
-	while (tcpSocket->bytesAvailable() > 0) {
+	while (tcpSocket->bytesAvailable()) {
 		in >> blockSize;
+		if (blockSize <= 0)
+			break;
 		in >> type;
 		switch (type) {
 		case quint8('I'): {
 			bool success;
 			in >> success;
-			if (success) {
-				client.state = ONC;
-			}
-			else {
+			qDebug() << "S_I 进入房间 " << success;
+			if (!success){//S_I getting into the room --> false
 				int retry = QMessageBox::warning(NULL, "提示", "连接被拒绝，是否重试？", 
 					QMessageBox::Yes | QMessageBox::Cancel);
 				if (retry == QMessageBox::Yes)
@@ -280,60 +284,100 @@ void clientWindow::clientRead() {
 				else
 					close();
 			}
-			//For the waiting login of role=ROOM
-			qDebug() << "进入房间 " << success;
+			else { //S_I getting into the room --> true
+				qDebug() << "房间初始化 id为:" << room;
+				client.room_in_accepted();
+			}
 			break;
 		}
+
 		case quint8('P'): {
-			bool iscool;
+			bool iscool, tosendT;
+			MODE mode;
+			int windtemp;
+			double Tfloor, Tcell, Tdefault;
 			in >> iscool;
-			if (iscool) client.mode = COOL;
-			else client.mode = WARM;
-			in >> client.Tfloor;
-			in >> client.Tcell;
-			in >> client.Tdefault;
-			int winds;
-			in >> winds;
-			client.Dwind= WIND(winds);
-			client.Ttarget = client.Tdefault;
-			C_T();
-			client.wind = client.Dwind;
-			C_R();
-			qDebug() << "P " << client.mode << " " << client.Tfloor << " "
-				<< client.Tcell << " " << client.Tdefault << " " << client.Dwind;
+			if (iscool) mode = COOL;
+			else mode = WARM;
+			in >> Tfloor;
+			in >> Tcell;
+			in >> Tdefault;
+			in >> windtemp;
+			qDebug() << "S_P" << mode << Tfloor << Tcell << Tdefault << windtemp;
+			switch (windtemp) {
+			case 1:
+				this->ui.W1->setChecked(true);
+				this->ui.W2->setChecked(false);
+				this->ui.W3->setChecked(false);
+
+				break;
+			case 2:
+				this->ui.W2->setChecked(true);
+				this->ui.W1->setChecked(false);
+				this->ui.W3->setChecked(false);
+				break;
+			case 3:
+				this->ui.W3->setChecked(true);
+				this->ui.W1->setChecked(false);
+				this->ui.W2->setChecked(false);
+				break;
+			}
+			tosendT = client.work_mode_received(mode, Tfloor, Tcell, Tdefault, WIND(windtemp));
+			//wind and Ttarget should be sent out when power on
+			//qDebug() << "P reset pattern:" << client.mode << " " << client.Tfloor << " "
+			//	<< client.Tcell << " " << client.Tdefault << " " << client.wind;
+			if (tosendT) {
+				client.set_temp_target(client.Tdefault);
+				C_T();
+				qDebug() << "Send Tdefault as Ttarget" << client.Ttarget;
+			}
 			break;
 		}
-		case quint8('C'): {//unused 
+
+		case quint8('O'): {
+			in >> client.cost;
+			in >> client.Tcurrent;
+			qDebug() << "S_O " << client.cost << client.Tcurrent;
+			break;
+		}
+
+		//TODO S_H
+		case quint8('H'): {
+			if (client.power == true) {
+				bool ishang;
+				in >> ishang;
+				if (!ishang && client.req==true) {//被调度
+					client.run = true;
+				}
+				else {//挂起
+					client.run = false;
+				}
+				qDebug() << "H " << ishang;
+			}
+			else {
+				qDebug() << "Received dispatch when there is no request.";
+			}
+			break;
+		}
+						  
+		//TODO S_A
+		case quint8('A'): {
+			client.req = false;
+			client.run = false;
+			qDebug() << "A received";
+			break;
+		}
+		
+		//deleted S_C message
+		/*
+		case quint8('C'): {
 			in >> client.Tcurrent;
 			qDebug() << "C " << client.Tcurrent;
 			break; 
 		}
-		case quint8('O'): {
-			in >> client.cost;
-			in >> client.Tcurrent;
-			qDebug() << "O " << client.cost << client.Tcurrent;
-			break;
-		}
-		case quint8('A'): {
-			client.autoUpdate = true;
-			qDebug() << "A";
-			break;
-		}
-		case quint8('H'): {
-			bool ishang;
-			in >> ishang;
-			if (!ishang) {//调度
-				client.waiting = false;
-				client.autoUpdate = false;
-			}
-			else {//挂起
-				client.waiting = true;
-				client.autoUpdate = true;
-			}
-			qDebug() << "H " << ishang;
-			break;
-		}
-		}
+		*/
+
+		}//case
 	}
 	emit dataRecived();
 }
@@ -341,7 +385,7 @@ void clientWindow::clientRead() {
 //Send message ClientAC --> ServerAC
 
 void clientWindow::C_I() {
-	qDebug() << "I "<< tcpSocket->isOpen();
+	qDebug() << "C_I"<< tcpSocket->isOpen();
 	block.clear();
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
@@ -353,7 +397,7 @@ void clientWindow::C_I() {
 
 void clientWindow::C_B() {
 	block.clear();
-	qDebug() << "Send B";
+	qDebug() << "C_B";
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('B') << client.roomID;
@@ -364,7 +408,7 @@ void clientWindow::C_B() {
 
 void clientWindow::C_E() {
 	block.clear();
-	qDebug() << "Send E";
+	qDebug() << "C_E";
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('E') << client.roomID;
@@ -375,7 +419,7 @@ void clientWindow::C_E() {
 
 void clientWindow::C_Q() {
 	block.clear();
-	qDebug() << "Send Chick out -- Q";
+	qDebug() << "C_Q";
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('Q') << client.roomID;
@@ -385,9 +429,31 @@ void clientWindow::C_Q() {
 	close();
 }
 
+void clientWindow::C_R() {
+	block.clear();
+	qDebug() << "C_R" << (int)client.wind;
+	QDataStream out(&block, QIODevice::WriteOnly);
+	out.setVersion(QDataStream::Qt_5_2);
+	out << quint16(0) << quint8('R') << client.roomID << (int)client.wind;
+	out.device()->seek(0);
+	out << quint16(block.size() - sizeof(quint16));
+	tcpSocket->write(block);
+}
+
+void clientWindow::C_C() {
+	block.clear();
+	qDebug() << "C_C" << client.Tcurrent;
+	QDataStream out(&block, QIODevice::WriteOnly);
+	out.setVersion(QDataStream::Qt_5_2);
+	out << quint16(0) << quint8('C') << client.roomID << client.Tcurrent;
+	out.device()->seek(0);
+	out << quint16(block.size() - sizeof(quint16));
+	tcpSocket->write(block);
+}
+
 void clientWindow::C_T() {
 	block.clear();
-	qDebug() << "Send Target temp" << client.Ttarget;
+	qDebug() << "C_T" << client.Ttarget;
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
 	out << quint16(0) << quint8('T') << client.roomID << client.Ttarget;
@@ -398,32 +464,10 @@ void clientWindow::C_T() {
 
 void clientWindow::C_G() {
 	block.clear();
-	qDebug() << "Send G";
+	qDebug() << "C_G";
 	QDataStream out(&block, QIODevice::WriteOnly);
 	out.setVersion(QDataStream::Qt_5_2);
-	out << quint16(0) << quint8('G') << client.roomID << client.Ttarget;
-	out.device()->seek(0);
-	out << quint16(block.size() - sizeof(quint16));
-	tcpSocket->write(block);
-}
-
-void clientWindow::C_C() {
-	block.clear();
-	qDebug() << "Send C" << client.Tcurrent;
-	QDataStream out(&block, QIODevice::WriteOnly);
-	out.setVersion(QDataStream::Qt_5_2);
-	out << quint16(0) << quint8('C') << client.roomID << client.Tcurrent;
-	out.device()->seek(0);
-	out << quint16(block.size() - sizeof(quint16));
-	tcpSocket->write(block);
-}
-
-void clientWindow::C_R() {
-	block.clear();
-	qDebug() << "Send Wind";
-	QDataStream out(&block, QIODevice::WriteOnly);
-	out.setVersion(QDataStream::Qt_5_7);
-	out << quint16(0) << quint8('R') << client.roomID << (int)client.wind;
+	out << quint16(0) << quint8('G') << client.roomID;
 	out.device()->seek(0);
 	out << quint16(block.size() - sizeof(quint16));
 	tcpSocket->write(block);

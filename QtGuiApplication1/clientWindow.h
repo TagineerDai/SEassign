@@ -13,9 +13,9 @@
 #include <QString>
 #include <cstring>
 
-extern int room;
-extern double Tinit;
-
+extern int room; //room id
+extern double Tinit; //the input env 
+extern ConfigAC cfg;
 class clientWindow : public QWidget
 {
 	Q_OBJECT
@@ -27,11 +27,12 @@ private slots:
 	//general logic + gui init
 	void updateFunction();
 	//general gui
+	void initLabel();
 	void updateLabel();
 	//room-vindow
 	void on_Bon_clicked();
 	void on_Bcout_clicked();
-	void on_Btemp_clicked();
+	void on_Bsubmit_clicked();
 	void on_W1_clicked();
 	void on_W2_clicked();
 	void on_W3_clicked();
@@ -40,14 +41,16 @@ private slots:
 	void clientRead();
 	void displayError(QAbstractSocket::SocketError socketError);
 signals:
-	void dataRecived();
+	void dataRecived(); 
+
 private:
 	int hostPort = 6666;
-	QHostAddress hostAddr = QHostAddress("10.8.189.223");
+	QHostAddress hostAddr = QHostAddress("127.0.0.1");
 	Ui::clientWindow ui;
+	int windbtn = 0;
 	QTcpSocket *tcpSocket;
 	ClientAC client;
-	QTimer * timer;
+	QTimer * timer, * auto_timer;
 	QByteArray block; //¿éÐÅÏ¢
 	quint8 type; //ÃüÁî×Ö
 	quint16 blockSize;

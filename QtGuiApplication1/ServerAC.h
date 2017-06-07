@@ -1,19 +1,20 @@
 # pragma execution_character_set("utf-8")
 #pragma once
 #include "ConfigAC.h"
-
+#include "ClientAC.h"
 class ServerAC {
 public:
 	ServerAC();
+	~ServerAC() {};
 	ServerAC(ConfigAC cfg);
-	AC work; // ON | OFF
+	bool work;
 	MODE mode; 
-	WIND Wdefault;
 	double Tcell, Tfloor, Tdefault;
+	
+	WIND Wdefault;
 	double Ecost;
-	double Epower[4];
-	void power_off();
-	void power_on();
+	double Espeed[4];
+
 	QString toString();
-	bool filled[5] = { false };
+	bool filled[4] = { false };
 };

@@ -12,21 +12,14 @@
 
 enum ROLE {
 	ROOM, ADMIN
-};
+}; //used by main DONE
 
 enum AC {
 	OFF = 0, ON = 1
 };
 
-enum STRATEGY {
-	FIFS, PRI, RR
-};
 enum MODE {
 	WARM = 0, COOL = 1
-};
-
-enum CONNECT {
-	ONC, OFFC, CNTC
 };
 
 enum WIND {
@@ -34,10 +27,9 @@ enum WIND {
 };
 
 QString AC2Qstr(AC ac);
-QString STRATEGY2Qstr(STRATEGY st);
 QString MODE2Qstr(int m);
 QString WIND2Qstr(int w);
-
+QString POWER2Qstr(bool work);
 //Connect setting
 class MySQLSetting {
 public:
@@ -49,18 +41,17 @@ public:
 	char table[20] = "DAC";        //database
 };
 
-/*const*/
-#define POWERHIGH 1.25
-#define POWERMEDIUM 1
-#define POWERLOW 0.75
-#define POWERNON 0
-
-#define ELECOST 1
-
-#define TCELL 35
-#define TFLOOR 10
+/*const -> default config*/
+#define TCELL 25
+#define TFLOOR 18
 #define TDEFAULT 25
-#define WDEFAULT 2
+#define VTEMP 0.008333
+#define ELESPNON 0
+#define ELESPLOW 0.005555
+#define ELESPMED 0.008333
+#define ELESPHIGH 0.016667
+#define ELECOST 1
+#define DPORT 6666
 
 class ConfigAC{
 public:
@@ -69,25 +60,14 @@ public:
 	double Tcell, Tfloor, Tdefault;
 	WIND Wdefault;
 	MODE mode;
+	double Vtemp;// Temperature change ratio
+	std::vector<double> Espeed;// consume of electric/wind
 	double Ecost;// price of electric
-	std::vector<double> Epower;// consume of electric/wind
-	std::vector<double> Eeffect; // effect of 1 min/wind
-	int interval;//time-speed ratio
 
 	ConfigAC();
 	~ConfigAC();
 	void defaultCFG();
 };
-
-/* for detail list */
-enum EVENT {
-	TOCOOL, TOWARM, TOLOW, TOMEDIUM, TOHIGH,
-	TURNON, TURNOFF, TOFIFS, TOFRI, TORR,
-	NEWTARGET
-};
-
-/* for GUI label */
-extern const char* ACstr[14];
 
 class ParserAC
 {

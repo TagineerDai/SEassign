@@ -1,0 +1,29 @@
+# The Air Condition 
+# Default password for administrator: SE2017
+# Developed by: 2014211304 GroupD
+#	2014211237 DYX
+#	           CX
+#	           HSM
+#	           SWL
+#	           GR
+
+Tcell = 25
+Tfloor = 18
+Tdefault = 25
+Wdefault = 2 #Middle
+# temperature and wind
+
+workmode = 1
+# COOL = 1 | WARM = 0
+
+Vtemp = 0.008333
+# up and down: 0.5 degree per minute
+
+Espeed = 0, 0.005555, 0.008333, 0.016667
+# time / power consume
+
+Ecost = 1
+# the price of electric / degree
+
+port = 6666
+# The server port

@@ -18,20 +18,6 @@ QString AC2Qstr(AC ac) {
 	}
 }
 
-QString STRATEGY2Qstr(STRATEGY st) {
-	switch (st) {
-	case FIFS:
-		return QString("SHORT>LONG");
-		break;
-	case PRI:
-		return QString("HIGH>MID>LOW");
-		break;
-	case RR:
-		return QString("Round-Robin");
-		break;
-	}
-}
-
 QString MODE2Qstr(int m) {
 	switch (m) {
 	case COOL:
@@ -54,7 +40,16 @@ QString WIND2Qstr(int w) {
 	}
 }
 
+QString POWER2Qstr(bool work) {
+	if (work)
+		return QString("工作中，");
+	else
+		return QString("待机中，");
+}
+
+
 ConfigAC::ConfigAC() {
+	int temp;
 	unfilled = true;
 	ParserAC parser = ParserAC("config.txt");
 	if (parser.ok == 1) {
@@ -63,8 +58,8 @@ ConfigAC::ConfigAC() {
 		parser.get("Tfloor", Tfloor);
 		parser.get("Tdefault", Tdefault);
 		int type;
-		parser.get("Wdefault", type);
-		switch (type) {
+		parser.get("Wdefault", temp);
+		switch (temp) {
 		case 1:
 			Wdefault = LOW;
 			break;
@@ -75,33 +70,37 @@ ConfigAC::ConfigAC() {
 			Wdefault = HIGH;
 			break;
 		}
-		parser.get("workmode", type);
-		if (type == 1) mode = COOL;
-		else mode = WARM;
-		parser.get("interval", interval);
+		parser.get("workmode", temp);
+		if (temp == 1) 
+			mode = COOL;
+		else 
+			mode = WARM;
+		
+		parser.get("Vtemp", Vtemp);
 		parser.get("Ecost", Ecost);
-		parser.get("Epower", Epower);
-		parser.get("Eeffect", Eeffect);
-		unfilled = false;
+		parser.get("Espeed", Espeed);
+		if (Espeed.size()>=4)
+			unfilled = false;
 	}
 	return;
 }
 
 void ConfigAC::defaultCFG() {
-	port = 666;
-	interval = 10;
 	Tcell = TCELL;
 	Tfloor = TFLOOR;
 	Tdefault = TDEFAULT;
 	Wdefault = MEDIUM;
 	mode = COOL;
+	Vtemp = VTEMP;
+	Espeed.push_back(ELESPNON);
+	Espeed.push_back(ELESPLOW);
+	Espeed.push_back(ELESPMED);
+	Espeed.push_back(ELESPHIGH);
 	Ecost = ELECOST;
-	Epower.push_back(POWERNON);
-	Epower.push_back(POWERLOW);
-	Epower.push_back(POWERMEDIUM);
-	Epower.push_back(POWERHIGH);
+	port = DPORT;
 	unfilled = false;
 }
+
 
 ConfigAC::~ConfigAC() {
 }

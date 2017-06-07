@@ -7,26 +7,23 @@
 #	           SWL
 #	           GR
 
-Tcell = 10
-Tfloor = 38
+Tcell = 25
+Tfloor = 18
 Tdefault = 25
-Wdefault = 2
-# temperature
+Wdefault = 2 #Middle
+# temperature and wind
 
 workmode = 1
 # COOL = 1 | WARM = 0
 
-interval = 1
-# 10seconds -> 1 virtual minute
+Vtemp = 0.008333
+# up and down: 0.5 degree per minute
 
-Eeffect = 0, 0.333, 0.5, 1
-# the tempreature change / minute
-
-Epower = 0, 0.75, 1, 1.25
-# the power consume / minute
+Espeed = 0, 0.005555, 0.008333, 0.016667
+# time / power consume
 
 Ecost = 1
 # the price of electric / degree
 
-port = 666
-# The server port and address
+port = 6666
+# The server port

@@ -117,27 +117,102 @@
       </column>
       <item row="0" column="0">
        <property name="text">
-        <string>是</string>
+        <string>--</string>
        </property>
       </item>
       <item row="0" column="1">
        <property name="text">
-        <string>否</string>
+        <string>--</string>
        </property>
       </item>
       <item row="0" column="2">
        <property name="text">
-        <string>18</string>
+        <string>--</string>
        </property>
       </item>
       <item row="0" column="3">
        <property name="text">
-        <string>15</string>
+        <string>--</string>
        </property>
       </item>
       <item row="0" column="4">
        <property name="text">
-        <string>中</string>
+        <string>--</string>
+       </property>
+      </item>
+      <item row="1" column="0">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="1" column="1">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="1" column="2">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="1" column="3">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="1" column="4">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="2" column="0">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="2" column="1">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="2" column="2">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="2" column="3">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="2" column="4">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="3" column="0">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="3" column="1">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="3" column="2">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="3" column="3">
+       <property name="text">
+        <string/>
+       </property>
+      </item>
+      <item row="3" column="4">
+       <property name="text">
+        <string/>
        </property>
       </item>
      </widget>
@@ -465,6 +540,26 @@
         <height>421</height>
        </rect>
       </property>
+      <row>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>2</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>3</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>4</string>
+       </property>
+      </row>
       <column>
        <property name="text">
         <string>房间号</string>
@@ -509,6 +604,86 @@
         </font>
        </property>
       </column>
+      <item row="0" column="0">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="0" column="1">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="0" column="2">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="0" column="3">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="1" column="0">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="1" column="1">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="1" column="2">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="1" column="3">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="2" column="0">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="2" column="1">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="2" column="2">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="2" column="3">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="3" column="0">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="3" column="1">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="3" column="2">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
+      <item row="3" column="3">
+       <property name="text">
+        <string>--</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </widget>
