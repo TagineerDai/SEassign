@@ -24,3 +24,11 @@ Tagineer Dai
 
 ##### 2017-4-28  
 + The hard-coded bug fixed in the LoginWindow.
+
+##### 2017-6-6
++ The Server with dispatch and logfile.
++ Refine message flow.
+
+##### 2017-6-7
++ Fixed some GUI bugs related to TableWidget.
++ Hand in Homework.
